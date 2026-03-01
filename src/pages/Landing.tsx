@@ -187,8 +187,19 @@ export const Landing: React.FC = () => {
 
         {/* Hero Bottom Curve */}
         <div className="absolute bottom-0 w-full">
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="fill-slate-50 w-full h-auto block translate-y-1">
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="fill-slate-50 w-full h-auto block translate-y-1" style={{ overflow: 'visible' }}>
               <path fillOpacity="1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,165.3C1248,149,1344,171,1392,181.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+
+              {/* Anteater Car driving along the curve */}
+              <g style={{ pointerEvents: 'none' }}>
+                <animateMotion
+                  dur="14s"
+                  repeatCount="indefinite"
+                  rotate="auto"
+                  path="M-150,224L0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,165.3C1248,149,1344,171,1392,181.3L1440,192L1590,192"
+                />
+                <image href="/anteater-car.png" width="120" height="76" x="-60" y="-72" />
+              </g>
            </svg>
         </div>
       </section>
