@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { GoogleIcon, PasswordField } from '../auth';
 import {
   Mail, AlertCircle, Loader2, CheckCircle2,
-  KeyRound, Shield, Users, RefreshCw, UserPlus,
+  KeyRound, RefreshCw, UserPlus,
 } from 'lucide-react';
 
 type SubStep = 'choose' | 'general-form' | 'otp';
@@ -123,20 +123,14 @@ export const StepSignUp: React.FC = () => {
       </div>
 
       {subStep === 'choose' ? (
-        <div className="space-y-5">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Shield size={16} className="text-uci-blue" />
-              <span className="text-sm font-bold text-slate-700">UCI Student</span>
-            </div>
-            <button
-              onClick={handleGoogleSignUp}
-              className="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl hover:bg-slate-50 transition-all hover:shadow-md group"
-            >
-              <GoogleIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              Sign up with UCI Google
-            </button>
-          </div>
+        <div className="space-y-4">
+          <button
+            onClick={handleGoogleSignUp}
+            className="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl hover:bg-slate-50 transition-all hover:shadow-md group"
+          >
+            <GoogleIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            Sign up with Google
+          </button>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -147,19 +141,17 @@ export const StepSignUp: React.FC = () => {
             </div>
           </div>
 
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Users size={16} className="text-slate-500" />
-              <span className="text-sm font-bold text-slate-700">UCI Student or Community</span>
-            </div>
-            <button
-              onClick={() => setSubStep('general-form')}
-              className="w-full bg-uci-blue text-white py-3.5 px-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transform active:scale-95"
-            >
-              <Mail size={20} />
-              Sign up with Email
-            </button>
-          </div>
+          <button
+            onClick={() => setSubStep('general-form')}
+            className="w-full bg-uci-blue text-white py-3.5 px-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transform active:scale-95"
+          >
+            <Mail size={20} />
+            Sign up with Email
+          </button>
+
+          <p className="text-center text-xs text-slate-400">
+            Sign up with your @uci.edu Google account to get a verified badge and access UCI-only listings.
+          </p>
 
           {feedbackBlock}
         </div>

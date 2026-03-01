@@ -25,7 +25,7 @@ const EMPTY_VEHICLE = {
 export const Onboarding: React.FC = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(user ? 2 : 1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [wasAuthOnMount] = useState(!!user);
 
