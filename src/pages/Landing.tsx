@@ -198,7 +198,15 @@ export const Landing: React.FC = () => {
                   rotate="auto"
                   path="M-150,224L0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,165.3C1248,149,1344,171,1392,181.3L1440,192L1590,192"
                 />
-                <image href="/anteater-car.png" width="120" height="76" x="-60" y="-72" />
+                {/* Car frame (no wheels) */}
+                <image href="/assets/frame-and-wheel/frame.png" width="120" height="76" x="-60" y="-72" />
+                {/* Wheels: adjust x,y in translate() to reposition */}
+                {[[-26.5, -13.5], [22, -13.5]].map(([cx, cy], i) => (
+                  <g key={i} transform={`translate(${cx}, ${cy})`}>
+                    <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="0.5s" repeatCount="indefinite" additive="sum" />
+                    <image href="/assets/frame-and-wheel/wheel.png" width="19" height="19" x="-9.5" y="-9.5" />
+                  </g>
+                ))}
               </g>
            </svg>
         </div>
