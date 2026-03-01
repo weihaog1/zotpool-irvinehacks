@@ -1,3 +1,4 @@
+export { StepSignUp } from './StepSignUp';
 export {
   StepNameGender,
   StepCity,

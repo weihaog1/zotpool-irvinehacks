@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { ChevronRight, ChevronLeft, Loader2 } from 'lucide-react';
 import { upsertVehicle } from '../services/vehicles';
 import {
+  StepSignUp,
   StepNameGender,
   StepCity,
   StepStudies,
@@ -24,7 +25,7 @@ const EMPTY_VEHICLE = {
 export const Onboarding: React.FC = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(user ? 2 : 1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState<OnboardingFormData>({
@@ -41,22 +42,31 @@ export const Onboarding: React.FC = () => {
     vehicle: { ...EMPTY_VEHICLE },
   });
 
+  // Auto-advance past sign-up step once user is authenticated
   useEffect(() => {
-    if (!user) {
-      navigate('/login');
+    if (user && step === 1) {
+      setStep(2);
+      if (user.name) {
+        setFormData(prev => ({ ...prev, name: user.name }));
+      }
+    }
+  }, [user, step]);
+
+  // Redirect already-onboarded users to dashboard
+  useEffect(() => {
+    if (user?.isOnboarded) {
+      navigate('/dashboard');
     }
   }, [user, navigate]);
 
-  if (!user) return null;
-
   const needsVehicleStep = formData.role === 'driver' || formData.role === 'both';
-  const totalSteps = needsVehicleStep ? 6 : 5;
+  const totalSteps = needsVehicleStep ? 7 : 6;
 
   const isStepValid = (): boolean => {
     switch (step) {
-      case 1:
+      case 2:
         return formData.name.trim().length > 0;
-      case 5:
+      case 6:
         return formData.role !== '';
       default:
         return true;
@@ -80,7 +90,7 @@ export const Onboarding: React.FC = () => {
   };
 
   const handleBack = () => {
-    if (step > 1) setStep(step - 1);
+    if (step > 2) setStep(step - 1);
   };
 
   const saveVehicle = async () => {
@@ -100,6 +110,7 @@ export const Onboarding: React.FC = () => {
   };
 
   const handleFinish = async () => {
+    if (!user) return;
     setIsSubmitting(true);
     try {
       if (needsVehicleStep) {
@@ -130,9 +141,10 @@ export const Onboarding: React.FC = () => {
   };
 
   const isLastStep = step === totalSteps;
-  const showSkip = step === 3 || (step === 6 && needsVehicleStep);
+  const showSkip = step === 4 || (step === 7 && needsVehicleStep);
+  const isSignUpStep = step === 1;
 
-  const stepProps = { formData, setFormData, email: user.email };
+  const stepProps = { formData, setFormData, email: user?.email };
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center py-12 px-4 relative overflow-hidden">
@@ -140,61 +152,66 @@ export const Onboarding: React.FC = () => {
 
       <div className="max-w-xl w-full bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-2xl p-8 md:p-12 border border-white/50 relative z-10 transition-all duration-500">
         {/* Step indicator */}
-        <div className="flex items-center justify-center space-x-2 mb-10">
-          {Array.from({ length: totalSteps }, (_, i) => i + 1).map((i) => (
-            <div
-              key={i}
-              className={`h-2 rounded-full transition-all duration-500 ${
-                i <= step ? 'w-8 bg-uci-blue' : 'w-2 bg-slate-200'
-              }`}
-            />
-          ))}
-        </div>
+        {!isSignUpStep && (
+          <div className="flex items-center justify-center space-x-2 mb-10">
+            {Array.from({ length: totalSteps - 1 }, (_, i) => i + 2).map((i) => (
+              <div
+                key={i}
+                className={`h-2 rounded-full transition-all duration-500 ${
+                  i <= step ? 'w-8 bg-uci-blue' : 'w-2 bg-slate-200'
+                }`}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Step content */}
         <div key={step} className="animate-fade-in-up">
-          {step === 1 && <StepNameGender {...stepProps} />}
-          {step === 2 && <StepCity {...stepProps} />}
-          {step === 3 && <StepStudies {...stepProps} />}
-          {step === 4 && <StepSocials {...stepProps} />}
-          {step === 5 && <StepRole {...stepProps} />}
-          {step === 6 && needsVehicleStep && <StepVehicle {...stepProps} />}
+          {step === 1 && <StepSignUp />}
+          {step === 2 && <StepNameGender {...stepProps} />}
+          {step === 3 && <StepCity {...stepProps} />}
+          {step === 4 && <StepStudies {...stepProps} />}
+          {step === 5 && <StepSocials {...stepProps} />}
+          {step === 6 && <StepRole {...stepProps} />}
+          {step === 7 && needsVehicleStep && <StepVehicle {...stepProps} />}
         </div>
 
-        {/* Navigation */}
-        <div className="flex justify-between items-center mt-12 pt-6 border-t border-slate-100">
-          <button
-            onClick={handleBack}
-            disabled={step === 1}
-            className={`px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-colors ${
-              step === 1 ? 'invisible' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
-            }`}
-          >
-            <ChevronLeft size={20} /> Back
-          </button>
-
-          <div className="flex items-center gap-3">
-            {showSkip && (
-              <button
-                onClick={handleSkipStep}
-                className="px-5 py-3 rounded-xl font-bold text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
-              >
-                Skip
-              </button>
-            )}
+        {/* Navigation (hidden on sign-up step) */}
+        {!isSignUpStep && (
+          <div className="flex justify-between items-center mt-12 pt-6 border-t border-slate-100">
             <button
-              onClick={handleNext}
-              disabled={!isStepValid() || isSubmitting}
-              className="bg-uci-blue text-white px-8 py-3.5 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none hover:translate-x-1"
+              onClick={handleBack}
+              disabled={step === 2}
+              className={`px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-colors ${
+                step === 2 ? 'invisible' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+              }`}
             >
-              {isSubmitting ? (
-                <><Loader2 className="animate-spin" size={20} /> Saving...</>
-              ) : (
-                <>{isLastStep ? 'Finish Profile' : 'Next Step'}{!isLastStep && <ChevronRight size={20} />}</>
-              )}
+              <ChevronLeft size={20} /> Back
             </button>
+
+            <div className="flex items-center gap-3">
+              {showSkip && (
+                <button
+                  onClick={handleSkipStep}
+                  className="px-5 py-3 rounded-xl font-bold text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
+                >
+                  Skip
+                </button>
+              )}
+              <button
+                onClick={handleNext}
+                disabled={!isStepValid() || isSubmitting}
+                className="bg-uci-blue text-white px-8 py-3.5 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none hover:translate-x-1"
+              >
+                {isSubmitting ? (
+                  <><Loader2 className="animate-spin" size={20} /> Saving...</>
+                ) : (
+                  <>{isLastStep ? 'Finish Profile' : 'Next Step'}{!isLastStep && <ChevronRight size={20} />}</>
+                )}
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

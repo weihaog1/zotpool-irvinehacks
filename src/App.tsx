@@ -8,7 +8,6 @@ import { Landing } from './pages/Landing';
 import { CURRENT_WAIVER_VERSION } from './data/waiverContent';
 
 const Login = lazy(async () => ({ default: (await import('./pages/Login')).Login }));
-const SignUp = lazy(async () => ({ default: (await import('./pages/SignUp')).SignUp }));
 const Waiver = lazy(async () => ({ default: (await import('./pages/Waiver')).Waiver }));
 const Onboarding = lazy(async () => ({ default: (await import('./pages/Onboarding')).Onboarding }));
 const Dashboard = lazy(async () => ({ default: (await import('./pages/Dashboard')).Dashboard }));
@@ -76,15 +75,8 @@ const AppContent: React.FC = () => {
                 <Routes>
                     <Route path="/" element={<Landing />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<SignUp />} />
-                    <Route
-                        path="/onboarding"
-                        element={
-                            <ProtectedRoute requireWaiver={false} requireOnboarding={false}>
-                                <Onboarding />
-                            </ProtectedRoute>
-                        }
-                    />
+                    <Route path="/signup" element={<Navigate to="/onboarding" replace />} />
+                    <Route path="/onboarding" element={<Onboarding />} />
                     <Route
                         path="/waiver"
                         element={
