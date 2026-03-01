@@ -1,7 +1,8 @@
-import React from 'react';
-import { MapPin, Navigation, Clock, Calendar, Car, CheckCircle, XCircle, Phone, Mail } from 'lucide-react';
+import React, { useState } from 'react';
+import { MapPin, Navigation, Clock, Calendar, Car, CheckCircle, XCircle, Phone, Mail, Instagram, MessageCircle, Eye, Info } from 'lucide-react';
 import { TierBadge } from '../ui/TierBadge';
-import type { Match, Ride, MatchStatus } from '../../types';
+import { BrowseRideModal } from '../browse/BrowseRideModal';
+import type { Match, Ride, MatchStatus, ContactMethod } from '../../types';
 import { formatTime } from '../../lib/formatters';
 import { DAYS_OF_WEEK } from '../../constants';
 
@@ -35,6 +36,13 @@ function getOverlappingDays(daysA: string[], daysB: string[]): string[] {
   return daysA.filter((d) => daysB.includes(d));
 }
 
+const contactMethodConfig: Record<ContactMethod, { label: string; icon: React.ComponentType<{ size?: number; className?: string }> }> = {
+  instagram: { label: 'Instagram', icon: Instagram },
+  discord: { label: 'Discord', icon: MessageCircle },
+  phone: { label: 'Phone', icon: Phone },
+  email: { label: 'Email', icon: Mail },
+};
+
 const ScoreBar: React.FC<{ label: string; value: number; max: number }> = ({
   label,
   value,
@@ -63,6 +71,8 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   onAccept,
   onDecline,
 }) => {
+  const [showRideModal, setShowRideModal] = useState(false);
+
   const otherRide =
     userRide.type === 'driver' ? match.passengerRide : match.driverRide;
 
@@ -249,9 +259,30 @@ export const MatchCard: React.FC<MatchCardProps> = ({
           </>
         )}
 
+        {/* Contact method badge for pending matches */}
+        {match.status === 'pending' && match.contactMethod && (
+          <>
+            <div className="h-px bg-slate-100" />
+            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3 flex items-center gap-2">
+              <Info size={16} className="text-uci-blue shrink-0" />
+              <p className="text-sm text-blue-800 font-medium">
+                They plan to contact you via{' '}
+                <span className="font-bold">{contactMethodConfig[match.contactMethod].label}</span>
+              </p>
+            </div>
+          </>
+        )}
+
         {/* Action buttons for pending matches */}
         {match.status === 'pending' && (onAccept || onDecline) && (
           <div className="flex gap-3 pt-1">
+            <button
+              onClick={() => setShowRideModal(true)}
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-colors"
+            >
+              <Eye size={18} />
+              View Details
+            </button>
             {onAccept && (
               <button
                 onClick={() => onAccept(match.id)}
@@ -272,7 +303,24 @@ export const MatchCard: React.FC<MatchCardProps> = ({
             )}
           </div>
         )}
+
+        {/* View Details for non-pending matches */}
+        {match.status !== 'pending' && (
+          <div className="pt-1">
+            <button
+              onClick={() => setShowRideModal(true)}
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-colors w-full"
+            >
+              <Eye size={18} />
+              View Details
+            </button>
+          </div>
+        )}
       </div>
+
+      {showRideModal && otherRide && (
+        <BrowseRideModal ride={otherRide} onClose={() => setShowRideModal(false)} />
+      )}
     </div>
   );
 };

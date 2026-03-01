@@ -15,6 +15,7 @@ import type {
   CarCleanliness,
   ParkingZone,
   MatchStatus,
+  ContactMethod,
   NotificationType,
   NotificationPreferences,
 } from '../types';
@@ -101,6 +102,7 @@ export interface DbMatch {
   score: number;
   status: MatchStatus;
   requested_by: string;
+  contact_method: string | null;
   responded_at: string | null;
   created_at: string;
   driver_ride?: Record<string, unknown>;
@@ -222,6 +224,7 @@ export function dbMatchToMatch(dbMatch: DbMatch): Match {
     score: dbMatch.score,
     status: dbMatch.status,
     requestedBy: dbMatch.requested_by,
+    contactMethod: (dbMatch.contact_method as ContactMethod) ?? undefined,
     respondedAt: dbMatch.responded_at ?? undefined,
     createdAt: dbMatch.created_at,
   };

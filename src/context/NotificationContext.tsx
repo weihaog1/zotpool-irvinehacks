@@ -7,6 +7,7 @@ import { TEST_USER_ID } from '../constants';
 interface NotificationContextType {
   notifications: AppNotification[];
   unreadCount: number;
+  pendingMatchCount: number;
   refreshNotifications: () => Promise<void>;
   markAsRead: (id: string) => Promise<void>;
   markAllRead: () => Promise<void>;
@@ -19,6 +20,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const pendingMatchCount = notifications.filter((n) => n.type === 'match_request' && !n.isRead).length;
 
   const refreshNotifications = useCallback(async () => {
     if (!user) return;
@@ -114,6 +116,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       value={{
         notifications,
         unreadCount,
+        pendingMatchCount,
         refreshNotifications,
         markAsRead,
         markAllRead,

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRides } from '../context/RideContext';
 import { MatchCard, FindMatchResults } from '../components/matches';
@@ -19,11 +20,18 @@ import type { Ride, Match } from '../types';
 
 type TabKey = 'pending' | 'active' | 'history';
 
+const VALID_TABS: TabKey[] = ['pending', 'active', 'history'];
+
 export const Matches: React.FC = () => {
   const { user } = useAuth();
   const { rides } = useRides();
+  const [searchParams] = useSearchParams();
 
-  const [activeTab, setActiveTab] = useState<TabKey>('pending');
+  const initialTab = VALID_TABS.includes(searchParams.get('tab') as TabKey)
+    ? (searchParams.get('tab') as TabKey)
+    : 'pending';
+
+  const [activeTab, setActiveTab] = useState<TabKey>(initialTab);
   const [matches, setMatches] = useState<Match[]>([]);
   const [isLoadingMatches, setIsLoadingMatches] = useState(true);
   const [respondingIds, setRespondingIds] = useState<Set<string>>(new Set());

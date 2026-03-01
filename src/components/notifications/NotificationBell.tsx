@@ -7,6 +7,7 @@ import {
   Clock,
   AlertTriangle,
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import type { AppNotification, NotificationType } from '../../types';
 import { formatRelativeTime } from '../../lib/formatters';
@@ -40,6 +41,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
   onMarkRead,
   onMarkAllRead,
 }) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -98,6 +100,10 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
                       if (!notification.isRead) {
                         onMarkRead(notification.id);
                       }
+                      if (notification.type === 'match_request') {
+                        setIsOpen(false);
+                        navigate('/matches?tab=pending');
+                      }
                     }}
                     className={`w-full text-left px-4 py-3 flex gap-3 transition-colors hover:bg-slate-50 ${
                       !notification.isRead ? 'bg-blue-50/30' : ''
@@ -136,12 +142,15 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
           {/* Footer */}
           {recentNotifications.length > 0 && (
             <div className="px-4 py-3 border-t border-slate-100">
-              <a
-                href="#/notifications"
-                className="block text-center text-sm font-semibold text-uci-blue hover:text-blue-700 transition-colors"
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate('/notifications');
+                }}
+                className="block w-full text-center text-sm font-semibold text-uci-blue hover:text-blue-700 transition-colors"
               >
                 View all notifications
-              </a>
+              </button>
             </div>
           )}
         </div>

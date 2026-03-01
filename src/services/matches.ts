@@ -1,5 +1,5 @@
 import { supabase, dbMatchToMatch } from './supabase';
-import type { Match } from '../types';
+import type { Match, ContactMethod } from '../types';
 import type { DbMatch } from './supabase';
 
 /**
@@ -9,7 +9,8 @@ export async function createMatchRequest(
   driverRideId: string,
   passengerRideId: string,
   score: number,
-  requestedBy: string
+  requestedBy: string,
+  contactMethod?: ContactMethod
 ): Promise<Match> {
   const { data, error } = await supabase
     .from('matches')
@@ -19,6 +20,7 @@ export async function createMatchRequest(
       score,
       status: 'pending',
       requested_by: requestedBy,
+      contact_method: contactMethod ?? null,
     })
     .select()
     .single();
@@ -26,6 +28,29 @@ export async function createMatchRequest(
   if (error) throw new Error(`Failed to create match request: ${error.message}`);
 
   return dbMatchToMatch(data as DbMatch);
+}
+
+/**
+ * Creates a notification for the ride owner when someone expresses interest.
+ */
+export async function createInterestNotification(
+  targetUserId: string,
+  requesterName: string,
+  rideSummary: string
+): Promise<void> {
+  const { error } = await supabase
+    .from('notifications')
+    .insert({
+      user_id: targetUserId,
+      type: 'match_request',
+      title: `${requesterName} is interested in your ride`,
+      body: `${requesterName} wants to match with your ride: ${rideSummary}`,
+      data: {},
+      is_read: false,
+      email_sent: false,
+    });
+
+  if (error) throw new Error(`Failed to create notification: ${error.message}`);
 }
 
 /**

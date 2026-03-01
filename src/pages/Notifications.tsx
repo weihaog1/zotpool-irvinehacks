@@ -8,6 +8,7 @@ import {
   AlertTriangle,
   CheckCheck,
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '../context/NotificationContext';
 import type { AppNotification, NotificationType } from '../types';
 import { formatRelativeTime } from '../lib/formatters';
@@ -60,6 +61,7 @@ function groupByDate(notifications: AppNotification[]): { label: string; items: 
 }
 
 export const Notifications: React.FC = () => {
+  const navigate = useNavigate();
   const { notifications, unreadCount, markAsRead, markAllRead } = useNotifications();
 
   const grouped = groupByDate(notifications);
@@ -114,6 +116,9 @@ export const Notifications: React.FC = () => {
                       onClick={() => {
                         if (!notification.isRead) {
                           markAsRead(notification.id);
+                        }
+                        if (notification.type === 'match_request') {
+                          navigate('/matches?tab=pending');
                         }
                       }}
                       className={`w-full text-left px-5 py-4 flex gap-4 transition-colors hover:bg-slate-50 ${

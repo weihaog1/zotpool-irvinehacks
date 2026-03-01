@@ -8,6 +8,7 @@ export type CostType = 'free' | 'split_gas' | 'split_gas_parking' | 'negotiable'
 export type CarCleanliness = 1 | 2 | 3 | 4 | 5;
 export type ParkingZone = 1 | 2 | 3 | 4 | 5 | 6;
 export type MatchStatus = 'pending' | 'accepted' | 'declined' | 'cancelled';
+export type ContactMethod = 'instagram' | 'discord' | 'phone' | 'email';
 export type RideStatus = 'active' | 'filled' | 'expired' | 'cancelled';
 export type NotificationType =
   | 'match_request'
@@ -107,6 +108,7 @@ export interface Match {
   score: number;
   status: MatchStatus;
   requestedBy: string;
+  contactMethod?: ContactMethod;
   respondedAt?: string;
   createdAt: string;
 }

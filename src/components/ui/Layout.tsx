@@ -7,7 +7,7 @@ import { NotificationBell } from '../notifications/NotificationBell';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout, loginForTesting } = useAuth();
-  const { notifications, unreadCount, markAsRead, markAllRead } = useNotifications();
+  const { notifications, unreadCount, pendingMatchCount, markAsRead, markAllRead } = useNotifications();
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
@@ -73,7 +73,14 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <div className="hidden md:flex items-center gap-1">
                     <NavLink to="/dashboard" icon={Home} label="Home" />
                     <NavLink to="/browse" icon={Search} label="Browse" />
-                    <NavLink to="/matches" icon={Handshake} label="Matches" />
+                    <div className="relative">
+                      <NavLink to="/matches" icon={Handshake} label="Matches" />
+                      {pendingMatchCount > 0 && (
+                        <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center bg-red-500 text-white text-[10px] font-bold rounded-full leading-none">
+                          {pendingMatchCount > 99 ? '99+' : pendingMatchCount}
+                        </span>
+                      )}
+                    </div>
                     <NavLink to="/create" icon={PlusCircle} label="Post Ride" primary />
                     <div className="h-6 w-px bg-slate-200 mx-3"></div>
                     <Link
@@ -161,6 +168,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                     </Link>
                     <Link to="/matches" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 text-slate-700 font-medium">
                         <Handshake size={20} className="text-uci-blue" /> Matches
+                        {pendingMatchCount > 0 && (
+                          <span className="ml-auto min-w-[20px] h-5 px-1.5 flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full">
+                            {pendingMatchCount > 99 ? '99+' : pendingMatchCount}
+                          </span>
+                        )}
                     </Link>
                     <Link to="/create" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl bg-uci-gold/20 text-uci-dark font-bold">
                         <PlusCircle size={20} /> Post Ride

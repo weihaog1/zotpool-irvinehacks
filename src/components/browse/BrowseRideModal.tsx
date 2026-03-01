@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Calendar, Clock, Car, User, ArrowRight, DollarSign, MessageCircle, Instagram, Mail, Phone, Sparkles, Shield, Repeat, CalendarDays, Tag } from 'lucide-react';
+import { X, Calendar, Clock, Car, User, ArrowRight, DollarSign, MessageCircle, Instagram, Mail, Phone, Sparkles, Shield, Repeat, CalendarDays, Tag, Send } from 'lucide-react';
 import { Ride } from '../../types';
 import { TierBadge } from '../ui/TierBadge';
 import { RouteMap } from '../ui/RouteMap';
 import { formatTime } from '../../lib/formatters';
+import { useAuth } from '../../context/AuthContext';
+import { SendInterestModal } from './SendInterestModal';
 
 function formatGenderPreference(pref: string): string {
   switch (pref) {
@@ -25,8 +27,11 @@ interface BrowseRideModalProps {
 }
 
 export const BrowseRideModal: React.FC<BrowseRideModalProps> = ({ ride, onClose }) => {
+  const { user } = useAuth();
   const contactName = ride.user?.name?.split(' ')[0] || 'them';
   const isEvent = ride.rideCategory === 'event';
+  const [showInterestModal, setShowInterestModal] = useState(false);
+  const isOwnRide = user?.id === ride.userId;
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -241,8 +246,30 @@ export const BrowseRideModal: React.FC<BrowseRideModalProps> = ({ ride, onClose 
               )}
             </div>
           </div>
+
+          {/* I'm Interested button */}
+          {!isOwnRide && (
+            <button
+              onClick={() => setShowInterestModal(true)}
+              className="w-full flex items-center justify-center gap-2 py-3 bg-uci-blue text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-sm hover:shadow-md"
+            >
+              <Send size={18} />
+              I'm Interested
+            </button>
+          )}
         </div>
         </div>
+
+        {showInterestModal && (
+          <SendInterestModal
+            ride={ride}
+            onClose={() => setShowInterestModal(false)}
+            onSuccess={() => {
+              setShowInterestModal(false);
+              onClose();
+            }}
+          />
+        )}
       </div>
     </div>,
     document.body
