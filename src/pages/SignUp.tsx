@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { GoogleIcon, PasswordField } from '../components/auth';
 import {
   Mail, AlertCircle, Loader2, CheckCircle2,
-  KeyRound, Shield, Users, RefreshCw,
+  KeyRound, RefreshCw,
 } from 'lucide-react';
 
 type SignUpStep = 'choose' | 'general-form' | 'otp';
@@ -126,42 +126,24 @@ export const SignUp: React.FC = () => {
 
           {step === 'choose' && (
             <>
-              {/* UCI Student path */}
-              <div className="mb-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <Shield size={16} className="text-uci-blue" />
-                  <span className="text-sm font-bold text-slate-700">UCI Student</span>
-                  <span className="text-xs bg-blue-50 text-uci-blue px-2 py-0.5 rounded-full font-semibold border border-blue-200">
-                    Verified
-                  </span>
-                </div>
+              <div className="space-y-3">
                 <button
                   onClick={handleGoogleSignUp}
                   className="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl hover:bg-slate-50 transition-all hover:shadow-md group"
                 >
                   <GoogleIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  Sign up with UCI Google
+                  Sign up with Google
                 </button>
-              </div>
 
-              <div className="relative mb-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-200"></div>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-slate-200"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase tracking-wide font-bold">
+                    <span className="px-4 bg-white/50 backdrop-blur-md text-slate-400 rounded-full">Or</span>
+                  </div>
                 </div>
-                <div className="relative flex justify-center text-xs uppercase tracking-wide font-bold">
-                  <span className="px-4 bg-white/50 backdrop-blur-md text-slate-400 rounded-full">Or</span>
-                </div>
-              </div>
 
-              {/* General user path */}
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Users size={16} className="text-slate-500" />
-                  <span className="text-sm font-bold text-slate-700">Everyone Else</span>
-                  <span className="text-xs bg-slate-50 text-slate-600 px-2 py-0.5 rounded-full font-semibold border border-slate-200">
-                    Community
-                  </span>
-                </div>
                 <button
                   onClick={() => setStep('general-form')}
                   className="w-full bg-uci-blue text-white py-3.5 px-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transform active:scale-95"
@@ -170,6 +152,10 @@ export const SignUp: React.FC = () => {
                   Sign up with Email
                 </button>
               </div>
+
+              <p className="mt-4 text-center text-xs text-slate-400">
+                Sign up with your @uci.edu Google account to get a verified badge and access UCI-only listings.
+              </p>
             </>
           )}
 
