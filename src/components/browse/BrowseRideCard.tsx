@@ -20,7 +20,7 @@ export const BrowseRideCard: React.FC<BrowseRideCardProps> = ({ ride, onSelect }
   const isEvent = ride.rideCategory === 'event';
 
   return (
-    <div className="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1">
+    <div onClick={() => onSelect(ride)} className="group cursor-pointer bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1">
       {/* Card Header */}
       <div className={`p-6 relative overflow-hidden ${ride.type === 'driver' ? 'bg-gradient-to-br from-uci-blue to-blue-600' : 'bg-gradient-to-br from-teal-500 to-teal-600'}`}>
         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
@@ -139,7 +139,7 @@ export const BrowseRideCard: React.FC<BrowseRideCardProps> = ({ ride, onSelect }
 
         <div className="mt-6 pt-6 border-t border-slate-100 space-y-3">
           <button
-            onClick={() => setShowMap(!showMap)}
+            onClick={(e) => { e.stopPropagation(); setShowMap(!showMap); }}
             className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${
               showMap
                 ? 'bg-uci-blue/10 text-uci-blue border border-uci-blue/20'
@@ -150,7 +150,7 @@ export const BrowseRideCard: React.FC<BrowseRideCardProps> = ({ ride, onSelect }
             <ChevronDown size={16} className={`transition-transform ${showMap ? 'rotate-180' : ''}`} />
           </button>
           <button
-            onClick={() => onSelect(ride)}
+            onClick={(e) => { e.stopPropagation(); onSelect(ride); }}
             className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-uci-blue transition-all shadow-lg shadow-slate-200 flex items-center justify-center gap-2 group-hover:gap-3">
             View Details <ChevronRight size={16} />
           </button>
