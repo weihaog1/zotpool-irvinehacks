@@ -3,9 +3,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRides } from '../context/RideContext';
 import { Car, User, MapPin, Loader2, AlertCircle, Shield, Info, CheckCircle } from 'lucide-react';
-import { CostType, CarCleanliness, GenderPreference, RideCategory, EventTag } from '../types';
+import { CostType, CarCleanliness, GenderPreference, RideCategory, EventTag, ParkingZone } from '../types';
 import { RouteMap, SelectField, RideCategoryPicker } from '../components/ui';
-import { PaymentSuggestionCard, CreatePostDriverFields, CreatePostScheduleFields } from '../components/create-post';
+import { CreatePostDriverFields, CreatePostScheduleFields, ParkingZonePicker } from '../components/create-post';
+import { UCI_PARKING_ZONES } from '../constants';
 
 export const CreatePost: React.FC = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export const CreatePost: React.FC = () => {
 
   const [rideCategory, setRideCategory] = useState<RideCategory>('commute');
   const [origin, setOrigin] = useState(user?.city || '');
-  const [destination, setDestination] = useState('UCI Main Campus');
+  const [destination, setDestination] = useState('');
   const [days, setDays] = useState<string[]>([]);
   const [timeStart, setTimeStart] = useState('08:00');
   const [timeEnd, setTimeEnd] = useState('17:00');
@@ -33,6 +34,7 @@ export const CreatePost: React.FC = () => {
   const [costType, setCostType] = useState<CostType>('split_gas');
   const [genderPreference, setGenderPreference] = useState<GenderPreference>('no_preference');
   const [uciOnly, setUciOnly] = useState(false);
+  const [parkingZone, setParkingZone] = useState<ParkingZone | null>(null);
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -66,6 +68,7 @@ export const CreatePost: React.FC = () => {
     setCostType(rideToEdit.details.costType || 'split_gas');
     setGenderPreference(rideToEdit.details.genderPreference || 'no_preference');
     setUciOnly(rideToEdit.uciOnly || false);
+    setParkingZone(rideToEdit.destinationParkingZone ?? null);
     setNotes(rideToEdit.details.notes || '');
   }, [isEditing, rideToEdit]);
 
@@ -95,7 +98,8 @@ export const CreatePost: React.FC = () => {
         type,
         rideCategory,
         origin: origin.trim(),
-        destination: destination.trim(),
+        destination: parkingZone ? `UCI - ${UCI_PARKING_ZONES[parkingZone].label}` : destination.trim(),
+        destinationParkingZone: isCommute ? parkingZone ?? undefined : undefined,
         schedule: {
           days: isCommute ? days : [],
           timeStart,
@@ -207,24 +211,62 @@ export const CreatePost: React.FC = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-bold text-slate-700 ml-1">Starting Point</label>
-                <input type="text" required value={origin} onChange={(e) => setOrigin(e.target.value)} placeholder="e.g. Irvine Spectrum"
+                <input type="text" required value={origin} onChange={(e) => setOrigin(e.target.value)}
+                  placeholder={isCommute ? 'e.g. Irvine Spectrum' : 'e.g. 123 Main St, Irvine, CA'}
                   className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-uci-blue/20 focus:border-uci-blue focus:bg-white outline-none transition-all font-medium" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-bold text-slate-700 ml-1">Destination</label>
-                <input type="text" required value={destination} onChange={(e) => setDestination(e.target.value)} placeholder="Within UCI"
-                  className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-uci-blue/20 focus:border-uci-blue focus:bg-white outline-none transition-all font-medium" />
+                <input type="text" required
+                  value={parkingZone ? `UCI - ${UCI_PARKING_ZONES[parkingZone].label}` : destination}
+                  onChange={(e) => { setDestination(e.target.value); setParkingZone(null); }}
+                  readOnly={parkingZone !== null}
+                  placeholder={isCommute ? 'UCI Main Campus' : ''}
+                  className={`w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-uci-blue/20 focus:border-uci-blue focus:bg-white outline-none transition-all font-medium ${parkingZone ? 'text-slate-500 cursor-not-allowed' : ''}`} />
               </div>
             </div>
+            {!isCommute && (
+              <div className="mt-4">
+                <p className="text-sm font-bold text-slate-700 ml-1 mb-2">Popular Destinations</p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { label: 'LAX Airport', value: 'LAX Airport, Los Angeles' },
+                    { label: 'John Wayne Airport', value: 'John Wayne Airport, Santa Ana' },
+                    { label: 'San Diego', value: 'San Diego, CA' },
+                    { label: 'Downtown LA', value: 'Downtown Los Angeles, CA' },
+                    { label: 'Disneyland', value: 'Disneyland, Anaheim' },
+                    { label: 'Union Station', value: 'Union Station, Los Angeles' },
+                  ].map((place) => (
+                    <button key={place.value} type="button"
+                      onClick={() => setDestination(place.value)}
+                      className={`px-3.5 py-2 rounded-xl text-sm font-semibold border transition-all ${
+                        destination === place.value
+                          ? 'bg-uci-blue/10 border-uci-blue/30 text-uci-blue'
+                          : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                      }`}>
+                      {place.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {isCommute && (parkingZone !== null || destination.trim() === '') && (
+              <div className="mt-6">
+                <ParkingZonePicker value={parkingZone} onChange={(zone) => {
+                  setParkingZone(zone);
+                  if (zone === null) setDestination('');
+                }} />
+              </div>
+            )}
             {origin.length > 2 && (
               <div className="mt-6">
                 <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">Route Preview</label>
-                <RouteMap origin={origin} destination={destination} height="250px" />
-              </div>
-            )}
-            {type === 'driver' && origin.length > 2 && destination.length > 2 && (
-              <div className="mt-6">
-                <PaymentSuggestionCard distanceMiles={15} totalRiders={seats} />
+                <RouteMap
+                  origin={origin}
+                  destination={destination}
+                  destinationCoords={parkingZone ? UCI_PARKING_ZONES[parkingZone].coords : undefined}
+                  height="250px"
+                />
               </div>
             )}
           </div>
