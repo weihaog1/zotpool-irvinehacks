@@ -45,12 +45,13 @@ export const BrowseRideModal: React.FC<BrowseRideModalProps> = ({ ride, onClose 
       {/* Backdrop: below navbar (z-50) so navbar stays visible */}
       <div className="fixed inset-0 z-[45] bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative z-[60] bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-full overflow-y-auto animate-in zoom-in-95 fade-in duration-200" role="dialog" aria-modal="true">
+      <div className="relative z-[60] bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-full flex flex-col overflow-hidden animate-in zoom-in-95 fade-in duration-200" role="dialog" aria-modal="true">
         <button onClick={onClose} aria-label="Close details"
           className="absolute top-4 right-4 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-slate-100 transition-colors">
           <X size={20} />
         </button>
 
+        <div className="overflow-y-auto min-h-0">
         {/* Header */}
         <div className={`p-8 relative overflow-hidden ${ride.type === 'driver' ? 'bg-gradient-to-br from-uci-blue to-blue-600' : 'bg-gradient-to-br from-teal-500 to-teal-600'}`}>
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
@@ -240,6 +241,7 @@ export const BrowseRideModal: React.FC<BrowseRideModalProps> = ({ ride, onClose 
               )}
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>,
