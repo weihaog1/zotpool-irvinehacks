@@ -142,15 +142,15 @@ export const Landing: React.FC = () => {
                 <span className="absolute inset-0 inline-flex rounded-full bg-uci-gold/40"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-uci-gold"></span>
               </span>
-              Made for UCI
+              For Anteaters, by Anteaters
             </div>
 
             <h1 className="font-display text-6xl md:text-8xl font-black tracking-tight text-white mb-8 leading-[0.9] text-balance drop-shadow-sm animate-fade-in-up" style={{animationDelay: '0.1s'}}>
-              Split the ride, <br/> not your <span className="text-transparent bg-clip-text bg-gradient-to-r from-uci-gold to-yellow-300">wallet</span>.
+              The smart way <br/> to <span className="text-transparent bg-clip-text bg-gradient-to-r from-uci-gold to-yellow-300">commute</span>.
             </h1>
 
             <p className="text-xl md:text-2xl text-blue-50 mb-12 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-              Carpooling with other UCI students. Find rides, share gas, and actually enjoy the commute.
+              Save cash, reduce emissions, and connect with fellow students on your way to campus.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up" style={{animationDelay: '0.3s'}}>
