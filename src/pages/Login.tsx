@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { GoogleIcon, PasswordField } from '../components/auth';
 import { Mail, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react';
@@ -11,6 +11,7 @@ export const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
   const { loginWithGoogle, loginWithEmail, authError } = useAuth();
 
   const handleGoogleLogin = async () => {
@@ -27,9 +28,7 @@ export const Login: React.FC = () => {
     try {
       const result = await loginWithEmail(email, password);
       if (result.success) {
-        setSuccessMessage('Signed in successfully.');
-        setEmail('');
-        setPassword('');
+        navigate('/dashboard');
       } else {
         setError(result.error || 'An error occurred. Please try again.');
       }
