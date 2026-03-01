@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Shield, FileCheck, Loader2 } from 'lucide-react';
+import { Shield, Loader2 } from 'lucide-react';
 import {
   CURRENT_WAIVER_VERSION,
   WAIVER_TITLE,
@@ -13,11 +13,10 @@ export const Waiver: React.FC = () => {
   const { user, updateUser } = useAuth();
 
   const [agreed, setAgreed] = useState(false);
-  const [signature, setSignature] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const canSubmit = agreed && signature.trim().length > 0 && !isSubmitting;
+  const canSubmit = agreed && !isSubmitting;
 
   const handleSubmit = async () => {
     if (!canSubmit || !user) return;
@@ -79,7 +78,7 @@ export const Waiver: React.FC = () => {
         </div>
 
         {/* Agreement checkbox */}
-        <label className="flex items-start gap-3 cursor-pointer mb-6 group">
+        <label className="flex items-start gap-3 cursor-pointer mb-8 group">
           <input
             type="checkbox"
             checked={agreed}
@@ -92,20 +91,6 @@ export const Waiver: React.FC = () => {
             ride safety requirements.
           </span>
         </label>
-
-        {/* Signature input */}
-        <div className="mb-8">
-          <label className="block text-sm font-bold text-slate-700 mb-1.5 ml-1">
-            Type your full name as signature *
-          </label>
-          <input
-            type="text"
-            value={signature}
-            onChange={(e) => setSignature(e.target.value)}
-            placeholder="e.g. Peter Anteater"
-            className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none focus:ring-2 focus:ring-uci-blue/20 focus:border-uci-blue focus:bg-white transition-all italic"
-          />
-        </div>
 
         {/* Error message */}
         {error && (
@@ -125,9 +110,7 @@ export const Waiver: React.FC = () => {
               <Loader2 className="animate-spin" size={20} /> Saving...
             </>
           ) : (
-            <>
-              <FileCheck size={20} /> Sign and Continue
-            </>
+            'Sign and Continue'
           )}
         </button>
 
