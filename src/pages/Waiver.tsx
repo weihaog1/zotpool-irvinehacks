@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Shield, FileCheck, Loader2 } from 'lucide-react';
+import { Shield, Loader2 } from 'lucide-react';
 import {
   CURRENT_WAIVER_VERSION,
   WAIVER_TITLE,
@@ -110,9 +110,7 @@ export const Waiver: React.FC = () => {
               <Loader2 className="animate-spin" size={20} /> Saving...
             </>
           ) : (
-            <>
-              <FileCheck size={20} /> Sign and Continue
-            </>
+            'Sign and Continue'
           )}
         </button>
 
