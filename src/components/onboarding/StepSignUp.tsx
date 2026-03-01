@@ -125,13 +125,6 @@ export const StepSignUp: React.FC = () => {
       {subStep === 'choose' ? (
         <div className="space-y-5">
           <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Shield size={16} className="text-uci-blue" />
-              <span className="text-sm font-bold text-slate-700">UCI Student</span>
-              <span className="text-xs bg-blue-50 text-uci-blue px-2 py-0.5 rounded-full font-semibold border border-blue-200">
-                Verified
-              </span>
-            </div>
             <button
               onClick={handleGoogleSignUp}
               className="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl hover:bg-slate-50 transition-all hover:shadow-md group"
@@ -151,13 +144,6 @@ export const StepSignUp: React.FC = () => {
           </div>
 
           <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Users size={16} className="text-slate-500" />
-              <span className="text-sm font-bold text-slate-700">Everyone Else</span>
-              <span className="text-xs bg-slate-50 text-slate-600 px-2 py-0.5 rounded-full font-semibold border border-slate-200">
-                Community
-              </span>
-            </div>
             <button
               onClick={() => setSubStep('general-form')}
               className="w-full bg-uci-blue text-white py-3.5 px-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transform active:scale-95"

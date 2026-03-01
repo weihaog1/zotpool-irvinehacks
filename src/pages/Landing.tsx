@@ -10,7 +10,6 @@ import {
   Route,
   ShieldCheck,
   Sparkles,
-  Star,
   UserCheck,
   Users,
   Zap
@@ -99,26 +98,6 @@ const featureHighlights = [
   }
 ] as const;
 
-const testimonials = [
-  {
-    name: 'Maya C.',
-    role: 'Computer Science, Class of 2027',
-    quote:
-      'I stopped buying daily parking and now ride with the same two classmates each week. It feels way more organized.'
-  },
-  {
-    name: 'Daniel R.',
-    role: 'Business Admin, Class of 2026',
-    quote:
-      'The verified student network is the main reason I trust it. I found a consistent route during week one.'
-  },
-  {
-    name: 'Avery P.',
-    role: 'Public Health, Class of 2028',
-    quote:
-      'Commuting used to be stressful. Now I know exactly when I leave and what I pay before every ride.'
-  }
-] as const;
 
 const faqs = [
   {
@@ -163,15 +142,15 @@ export const Landing: React.FC = () => {
                 <span className="absolute inset-0 inline-flex rounded-full bg-uci-gold/40"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-uci-gold"></span>
               </span>
-              For Anteaters, by Anteaters
+              Made for UCI
             </div>
 
             <h1 className="font-display text-6xl md:text-8xl font-black tracking-tight text-white mb-8 leading-[0.9] text-balance drop-shadow-sm animate-fade-in-up" style={{animationDelay: '0.1s'}}>
-              The smart way <br/> to <span className="text-transparent bg-clip-text bg-gradient-to-r from-uci-gold to-yellow-300">commute</span>.
+              Split the ride, <br/> not your <span className="text-transparent bg-clip-text bg-gradient-to-r from-uci-gold to-yellow-300">wallet</span>.
             </h1>
 
             <p className="text-xl md:text-2xl text-blue-50 mb-12 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-              Save cash, reduce emissions, and vibe with fellow students on your way to campus.
+              Carpooling with other UCI students. Find rides, share gas, and actually enjoy the commute.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up" style={{animationDelay: '0.3s'}}>
@@ -353,39 +332,6 @@ export const Landing: React.FC = () => {
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="py-24 bg-slate-50 deferred-section">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-100 text-amber-800 rounded-full font-semibold text-sm mb-4">
-              <Star size={14} className="fill-current" /> Social Proof
-            </span>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-slate-900 mb-4">
-              Students trust ZotPool for their weekly commute
-            </h2>
-            <p className="text-slate-600 text-lg md:text-xl max-w-2xl mx-auto">
-              Real riders, real routes, and consistent outcomes during high-pressure academic schedules.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            {testimonials.map((testimonial) => (
-              <article key={testimonial.name} className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
-                <div className="flex items-center gap-1 text-amber-500 mb-4">
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <Star key={`${testimonial.name}-${index}`} size={16} className="fill-current" />
-                  ))}
-                </div>
-                <p className="text-slate-700 text-lg leading-relaxed mb-6">"{testimonial.quote}"</p>
-                <div>
-                  <p className="font-semibold text-slate-900">{testimonial.name}</p>
-                  <p className="text-sm text-slate-500">{testimonial.role}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* FAQ Section */}
       <section className="py-24 bg-white deferred-section">
