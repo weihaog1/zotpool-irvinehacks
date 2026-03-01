@@ -17,15 +17,6 @@ export const Dashboard: React.FC = () => {
   const myRides = rides.filter(ride => ride.userId === user?.id);
   const [tipDismissed, setTipDismissed] = useState(false);
 
-  const getQuarterLabel = (date: Date) => {
-    const month = date.getMonth();
-    const year = date.getFullYear();
-    if (month <= 2) return `Winter Quarter ${year}`;
-    if (month <= 5) return `Spring Quarter ${year}`;
-    if (month <= 8) return `Summer Quarter ${year}`;
-    return `Fall Quarter ${year}`;
-  };
-  const quarterLabel = getQuarterLabel(new Date());
   const recentRides = myRides.slice(0, 3);
   const recurringCount = myRides.filter(ride => ride.schedule.isRecurring).length;
 
@@ -86,19 +77,14 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
-      <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-            <div className="flex items-center gap-3">
-              <h1 className="font-display text-4xl font-bold text-slate-900 tracking-tight">
-                Hello, <span className="text-transparent bg-clip-text bg-gradient-to-r from-uci-blue to-blue-400">{user?.name || 'there'}</span>
-              </h1>
-              {user?.authTier && <TierBadge tier={user.authTier} size="sm" />}
-            </div>
-            <p className="text-slate-500 mt-2 text-lg">Where are we heading today?</p>
+      <div className="mb-10">
+        <div className="flex items-center gap-3">
+          <h1 className="font-display text-4xl font-bold text-slate-900 tracking-tight">
+            Hello, <span className="text-transparent bg-clip-text bg-gradient-to-r from-uci-blue to-blue-400">{user?.name || 'there'}</span>
+          </h1>
+          {user?.authTier && <TierBadge tier={user.authTier} size="sm" />}
         </div>
-        <div className="bg-white/50 backdrop-blur-sm border border-slate-200 px-4 py-2 rounded-full text-sm font-medium text-slate-600">
-            {quarterLabel}
-        </div>
+        <p className="text-slate-500 mt-2 text-lg">Where are we heading today?</p>
       </div>
 
       {/* Main Actions - Role-aware card order */}
