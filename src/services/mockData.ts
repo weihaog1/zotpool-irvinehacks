@@ -1,201 +1,228 @@
-import { Post, User } from '../types';
+import { Ride, User } from '../types';
 
 const MOCK_USERS: User[] = [
   {
     id: 'u1',
     name: 'Peter Anteater',
     email: 'peter@uci.edu',
+    authTier: 'uci',
     gender: 'Male',
     major: 'Computer Science',
     year: 'Junior',
     isOnboarded: true,
     role: 'driver',
-    city: 'Irvine'
+    city: 'Irvine',
   },
   {
     id: 'u2',
     name: 'Sarah Kim',
     email: 'skim@uci.edu',
+    authTier: 'uci',
     gender: 'Female',
     major: 'Biology',
     year: 'Senior',
     isOnboarded: true,
     role: 'passenger',
-    city: 'Fullerton'
+    city: 'Fullerton',
   },
   {
     id: 'u3',
     name: 'Marcus Johnson',
     email: 'mjohnson@uci.edu',
+    authTier: 'uci',
     gender: 'Male',
     major: 'Mechanical Engineering',
     year: 'Sophomore',
     isOnboarded: true,
     role: 'driver',
-    city: 'Long Beach'
+    city: 'Costa Mesa',
   },
   {
     id: 'u4',
     name: 'Emily Chen',
     email: 'echen@uci.edu',
+    authTier: 'uci',
     gender: 'Female',
     major: 'Psychology',
     year: 'Freshman',
     isOnboarded: true,
     role: 'passenger',
-    city: 'Anaheim'
+    city: 'Anaheim',
   },
   {
     id: 'u5',
     name: 'David Rodriguez',
     email: 'davidr@uci.edu',
+    authTier: 'uci',
     gender: 'Male',
     major: 'Business Admin',
     year: 'Senior',
     isOnboarded: true,
     role: 'both',
-    city: 'Tustin'
+    city: 'Tustin',
   },
   {
     id: 'u6',
     name: 'Jessica Lee',
     email: 'jessl@uci.edu',
+    authTier: 'uci',
     gender: 'Female',
     major: 'Nursing',
     year: 'Junior',
     isOnboarded: true,
     role: 'passenger',
-    city: 'Los Angeles'
-  }
+    city: 'Lake Forest',
+  },
 ];
 
-export const generateMockPosts = (): Post[] => {
+export const generateMockPosts = (): Ride[] => {
   return [
     {
       id: 'p1',
       userId: 'u1',
       user: MOCK_USERS[0],
       type: 'driver',
-      origin: 'UTC Apartments, Irvine',
-      destination: 'UCI Flagpoles',
+      rideCategory: 'commute',
+      origin: 'University Town Center, Irvine',
+      destination: 'UCI Main Campus',
+      destinationParkingZone: 5,
       schedule: {
         days: ['Mon', 'Wed', 'Fri'],
         timeStart: '08:30',
         timeEnd: '17:00',
-        isRecurring: true
+        isRecurring: true,
       },
       details: {
-        carType: 'Toyota Prius',
         seats: 3,
         cleanliness: 5,
         yearsDriving: 3,
         costType: 'split_gas',
-        notes: 'Listening to calm lo-fi in the mornings. Prompt departure.'
+        notes: 'Listening to calm lo-fi in the mornings. Prompt departure.',
       },
-      createdAt: new Date().toISOString()
+      uciOnly: false,
+      status: 'active',
+      createdAt: new Date().toISOString(),
     },
     {
       id: 'p2',
       userId: 'u2',
       user: MOCK_USERS[1],
       type: 'passenger',
-      origin: 'Sunny Hills, Fullerton',
-      destination: 'UCI Science Library',
+      rideCategory: 'commute',
+      origin: 'Fullerton Park and Ride',
+      destination: 'UCI Main Campus',
+      destinationParkingZone: 2,
       schedule: {
         days: ['Tue', 'Thu'],
         timeStart: '09:00',
         timeEnd: '15:30',
-        isRecurring: true
+        isRecurring: true,
       },
       details: {
-        genderPreference: 'same',
-        notes: 'Happy to chip in for gas! I usually sleep on the way there.'
+        genderPreference: 'same_gender',
+        notes: 'Happy to chip in for gas! I usually sleep on the way there.',
       },
-      createdAt: new Date().toISOString()
+      uciOnly: false,
+      status: 'active',
+      createdAt: new Date().toISOString(),
     },
     {
       id: 'p3',
       userId: 'u3',
       user: MOCK_USERS[2],
       type: 'driver',
-      origin: 'Downtown Long Beach',
-      destination: 'UCI Engineering Hall',
+      rideCategory: 'commute',
+      origin: 'South Coast Plaza, Costa Mesa',
+      destination: 'UCI Main Campus',
+      destinationParkingZone: 4,
       schedule: {
         days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
         timeStart: '07:00',
         timeEnd: '16:00',
-        isRecurring: true
+        isRecurring: true,
       },
       details: {
-        carType: 'Honda Civic',
         seats: 2,
         cleanliness: 4,
         yearsDriving: 2,
         costType: 'split_gas_parking',
-        notes: 'Commuting daily. Prefer someone who likes to chat or listen to podcasts.'
+        notes: 'Commuting daily. Prefer someone who likes to chat or listen to podcasts.',
       },
-      createdAt: new Date().toISOString()
+      uciOnly: false,
+      status: 'active',
+      createdAt: new Date().toISOString(),
     },
     {
       id: 'p4',
       userId: 'u4',
       user: MOCK_USERS[3],
       type: 'passenger',
-      origin: 'Platinum Triangle, Anaheim',
-      destination: 'UCI Aldrich Park',
+      rideCategory: 'commute',
+      origin: 'Anaheim Hills, Anaheim',
+      destination: 'UCI Main Campus',
+      destinationParkingZone: 1,
       schedule: {
         days: ['Mon', 'Fri'],
         timeStart: '10:00',
         timeEnd: '14:00',
-        isRecurring: false
+        isRecurring: false,
       },
       details: {
-        genderPreference: 'any',
-        notes: 'Just need a ride for a few weeks while my car is in the shop.'
+        genderPreference: 'no_preference',
+        notes: 'Just need a ride for a few weeks while my car is in the shop.',
       },
-      createdAt: new Date().toISOString()
+      uciOnly: false,
+      status: 'active',
+      createdAt: new Date().toISOString(),
     },
     {
       id: 'p5',
       userId: 'u5',
       user: MOCK_USERS[4],
       type: 'driver',
+      rideCategory: 'commute',
       origin: 'The District, Tustin',
-      destination: 'UCI Social Science',
+      destination: 'UCI Main Campus',
+      destinationParkingZone: 3,
       schedule: {
         days: ['Tue', 'Thu'],
         timeStart: '12:00',
         timeEnd: '18:00',
-        isRecurring: true
+        isRecurring: true,
       },
       details: {
-        carType: 'Tesla Model 3',
         seats: 4,
         cleanliness: 5,
         yearsDriving: 5,
         costType: 'free',
-        notes: 'EV charging is free for me so ride is free for you!'
+        notes: 'EV charging is free for me so ride is free for you!',
       },
-      createdAt: new Date().toISOString()
+      uciOnly: false,
+      status: 'active',
+      createdAt: new Date().toISOString(),
     },
     {
       id: 'p6',
       userId: 'u6',
       user: MOCK_USERS[5],
       type: 'passenger',
-      origin: 'Koreatown, Los Angeles',
-      destination: 'UCI Arts',
+      rideCategory: 'commute',
+      origin: 'Lake Forest, CA',
+      destination: 'UCI Main Campus',
+      destinationParkingZone: 6,
       schedule: {
         days: ['Wed'],
         timeStart: '06:00',
         timeEnd: '20:00',
-        isRecurring: true
+        isRecurring: true,
       },
       details: {
-        genderPreference: 'same',
-        notes: 'Long commute, looking for a reliable driver.'
+        genderPreference: 'same_gender',
+        notes: 'Looking for a reliable carpool buddy.',
       },
-      createdAt: new Date().toISOString()
-    }
+      uciOnly: false,
+      status: 'active',
+      createdAt: new Date().toISOString(),
+    },
   ];
 };
