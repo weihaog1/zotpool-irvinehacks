@@ -56,9 +56,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <div className="px-6">
             <div className="flex justify-between items-center h-16">
                 <div className="flex items-center">
-                <Link to={user ? (user.isOnboarded ? "/dashboard" : "/onboarding") : "/"} className="flex items-center gap-2 group">
-                    <img src="/assets/icon.png" alt="ZotPool" className="h-9 w-9 group-hover:scale-110 transition-transform duration-300" />
-                    <span className="font-display font-bold text-xl tracking-tight text-uci-dark">Zot<span className="text-uci-blue">Pool</span></span>
+                <Link to="/" className="flex items-center gap-2 group">
+                    <img src="/assets/icon.png" alt="ZotPool" className="h-[60px] w-[60px] group-hover:scale-110 transition-transform duration-300" />
+                    <span className="font-display font-bold text-2xl tracking-tight text-uci-dark">Zot<span className="text-uci-blue">Pool</span></span>
                 </Link>
                 </div>
 
@@ -199,7 +199,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         </nav>
       </div>
 
-      <main className={`flex-grow pb-12 relative z-0 ${isLandingPage ? '' : 'pt-24'}`}>
+      <main className={`flex-grow pb-12 relative z-0 ${isLandingPage ? '' : 'pt-28'}`}>
         {children}
       </main>
 

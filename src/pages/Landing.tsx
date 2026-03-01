@@ -152,7 +152,7 @@ export const Landing: React.FC = () => {
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center pt-20 pb-32 md:pb-40">
+      <section className="relative min-h-[100dvh] flex items-center pt-20 pb-32 md:pb-40">
         <div className="absolute inset-0 mesh-bg opacity-100"></div>
         <div className="absolute inset-0 hero-grain opacity-30"></div>
 
