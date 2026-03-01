@@ -74,7 +74,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   const [showRideModal, setShowRideModal] = useState(false);
 
   const otherRide =
-    userRide.type === 'driver' ? match.passengerRide : match.driverRide;
+    match.driverRide?.id === userRide.id ? match.passengerRide : match.driverRide;
 
   if (!otherRide) return null;
 
