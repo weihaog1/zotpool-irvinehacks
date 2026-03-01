@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Send, Instagram, MessageCircle, Phone, Mail, ChevronDown, ExternalLink, Loader2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { X, Send, Instagram, MessageCircle, Phone, Mail, ExternalLink, Loader2 } from 'lucide-react';
 import type { Ride, ContactMethod } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { useRides } from '../../context/RideContext';
@@ -26,23 +25,17 @@ export const SendInterestModal: React.FC<SendInterestModalProps> = ({ ride, onCl
   const { rides } = useRides();
 
   const [selectedContactMethod, setSelectedContactMethod] = useState<ContactMethod | null>(null);
-  const [selectedRideId, setSelectedRideId] = useState<string>('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const contactName = ride.user?.name?.split(' ')[0] || 'them';
   const complementaryType = ride.type === 'driver' ? 'passenger' : 'driver';
 
-  // Filter user's rides to the complementary type
-  const myComplementaryRides = useMemo(
-    () => rides.filter((r) => r.userId === user?.id && r.status === 'active' && r.type === complementaryType),
+  // Find a matching ride from the user if one exists
+  const selectedRide = useMemo(
+    () => rides.find((r) => r.userId === user?.id && r.status === 'active' && r.type === complementaryType) ?? null,
     [rides, user?.id, complementaryType],
   );
-
-  // Auto-select if only one ride
-  const effectiveSelectedId = myComplementaryRides.length === 1 ? myComplementaryRides[0].id : selectedRideId;
-  const selectedRide = myComplementaryRides.find((r) => r.id === effectiveSelectedId) ?? null;
 
   // Filter contact methods to what the ride owner has listed
   const availableContactMethods = useMemo(() => {
@@ -58,17 +51,15 @@ export const SendInterestModal: React.FC<SendInterestModalProps> = ({ ride, onCl
   }, [ride.user]);
 
   const handleSend = async () => {
-    if (!user || !selectedRide) return;
+    if (!user) return;
     setIsSending(true);
     setError(null);
 
     try {
-      // Calculate score (0 if hard-filtered)
-      const scoreResult = calculateMatchScore(selectedRide, ride);
-      const score = scoreResult?.total ?? 0;
+      const score = selectedRide ? (calculateMatchScore(selectedRide, ride)?.total ?? 0) : 0;
 
-      const driverRideId = ride.type === 'driver' ? ride.id : selectedRide.id;
-      const passengerRideId = ride.type === 'passenger' ? ride.id : selectedRide.id;
+      const driverRideId = ride.type === 'driver' ? ride.id : (selectedRide?.id ?? ride.id);
+      const passengerRideId = ride.type === 'passenger' ? ride.id : (selectedRide?.id ?? ride.id);
 
       await createMatchRequest(
         driverRideId,
@@ -167,62 +158,6 @@ export const SendInterestModal: React.FC<SendInterestModalProps> = ({ ride, onCl
             </div>
           )}
 
-          {/* Ride picker */}
-          {myComplementaryRides.length === 0 ? (
-            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center space-y-2">
-              <p className="text-sm font-medium text-amber-800">
-                You need a {complementaryType} ride to match.
-              </p>
-              <Link
-                to="/create"
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-uci-blue text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors"
-              >
-                Create one now
-                <ExternalLink size={14} />
-              </Link>
-            </div>
-          ) : myComplementaryRides.length > 1 ? (
-            <div>
-              <label className="text-sm font-bold text-slate-700 block mb-2">Select your ride</label>
-              <div className="relative">
-                <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:border-slate-300 transition-colors"
-                >
-                  <span className={selectedRide ? 'text-slate-900' : 'text-slate-400'}>
-                    {selectedRide
-                      ? `${selectedRide.origin} to ${selectedRide.destination}`
-                      : 'Select a ride...'}
-                  </span>
-                  <ChevronDown size={16} className={`text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
-                {isDropdownOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-lg z-20 max-h-48 overflow-y-auto">
-                    {myComplementaryRides.map((r) => (
-                      <button
-                        key={r.id}
-                        onClick={() => { setSelectedRideId(r.id); setIsDropdownOpen(false); }}
-                        className={`w-full text-left px-4 py-3 text-sm hover:bg-slate-50 transition-colors first:rounded-t-xl last:rounded-b-xl ${
-                          effectiveSelectedId === r.id ? 'bg-blue-50 text-uci-blue font-semibold' : 'text-slate-700'
-                        }`}
-                      >
-                        <span className="font-medium">{r.origin} to {r.destination}</span>
-                        <span className="ml-2 text-xs text-slate-400 uppercase">{r.type}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="bg-slate-50 rounded-xl p-3">
-              <p className="text-xs font-semibold text-slate-400 uppercase mb-1">Your ride</p>
-              <p className="text-sm font-medium text-slate-700">
-                {myComplementaryRides[0].origin} to {myComplementaryRides[0].destination}
-                <span className="ml-2 text-xs text-slate-400 uppercase">{myComplementaryRides[0].type}</span>
-              </p>
-            </div>
-          )}
 
           {/* Error */}
           {error && (
@@ -234,7 +169,7 @@ export const SendInterestModal: React.FC<SendInterestModalProps> = ({ ride, onCl
           {/* Send button */}
           <button
             onClick={handleSend}
-            disabled={!selectedRide || isSending}
+            disabled={isSending}
             className="w-full flex items-center justify-center gap-2 py-3 bg-uci-blue text-white font-bold rounded-xl hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
           >
             {isSending ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
