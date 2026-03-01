@@ -65,7 +65,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[45] flex items-center justify-center p-4 pt-24">
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Check, User, MapPin, Share2, Car, GraduationCap, Instagram, Phone, MessageCircle, Truck } from 'lucide-react';
 import { SelectField } from '../ui/SelectField';
 import { VehicleDetailsForm, VehicleFormData } from '../ui/VehicleDetailsForm';
@@ -78,25 +78,104 @@ export const StepNameGender: React.FC<StepProps> = ({ formData, setFormData }) =
   </div>
 );
 
-export const StepCity: React.FC<StepProps> = ({ formData, setFormData }) => (
-  <div className="space-y-8">
-    <div className="text-center">
-      <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-uci-blue shadow-inner -rotate-3">
-        <MapPin size={40} />
+export const StepCity: React.FC<StepProps> = ({ formData, setFormData }) => {
+  const [suggestions, setSuggestions] = useState<{ place_name: string; text: string }[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const token = import.meta.env.VITE_MAPBOX_TOKEN;
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const fetchSuggestions = (query: string) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!token || query.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${token}&country=US&proximity=-117.8443,33.6405&types=place,locality,neighborhood&limit=5`
+        );
+        const data = await res.json();
+        if (data.features) {
+          setSuggestions(data.features.map((f: { place_name: string; text: string }) => ({
+            place_name: f.place_name,
+            text: f.text,
+          })));
+          setShowSuggestions(true);
+        }
+      } catch {
+        setSuggestions([]);
+      }
+    }, 300);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setFormData(prev => ({ ...prev, city: val }));
+    fetchSuggestions(val);
+  };
+
+  const handleSelect = (suggestion: { place_name: string; text: string }) => {
+    setFormData(prev => ({ ...prev, city: suggestion.text }));
+    setShowSuggestions(false);
+    setSuggestions([]);
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="text-center">
+        <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-uci-blue shadow-inner -rotate-3">
+          <MapPin size={40} />
+        </div>
+        <h2 className="font-display text-3xl font-bold text-slate-900">Your Commute</h2>
+        <p className="text-slate-500 text-lg mt-2">Where are you coming from?</p>
       </div>
-      <h2 className="font-display text-3xl font-bold text-slate-900">Your Commute</h2>
-      <p className="text-slate-500 text-lg mt-2">Where are you coming from?</p>
+      <div className="space-y-5">
+        <div ref={containerRef} className="relative">
+          <label className="block text-sm font-bold text-slate-700 mb-1.5 ml-1">City / Area (optional)</label>
+          <input
+            type="text"
+            value={formData.city}
+            onChange={handleChange}
+            onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+            placeholder="e.g. Irvine Spectrum"
+            className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none focus:ring-2 focus:ring-uci-blue/20 focus:border-uci-blue focus:bg-white transition-all"
+          />
+          {showSuggestions && suggestions.length > 0 && (
+            <ul className="absolute z-20 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden">
+              {suggestions.map((s, i) => (
+                <li key={i}>
+                  <button
+                    type="button"
+                    onClick={() => handleSelect(s)}
+                    className="w-full text-left px-4 py-3 hover:bg-slate-50 transition-colors flex items-start gap-3"
+                  >
+                    <MapPin size={16} className="text-slate-400 mt-0.5 shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-medium text-slate-900 text-sm">{s.text}</p>
+                      <p className="text-xs text-slate-400 truncate">{s.place_name}</p>
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
     </div>
-    <div className="space-y-5">
-      <InputField
-        label="City / Area (optional)"
-        value={formData.city}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-        placeholder="e.g. Irvine Spectrum"
-      />
-    </div>
-  </div>
-);
+  );
+};
 
 export const StepStudies: React.FC<StepProps> = ({ formData, setFormData }) => (
   <div className="space-y-8">
