@@ -1,0 +1,87 @@
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.hero-grain {
+  background-image: radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.1) 0, transparent 28%),
+    radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.08) 0, transparent 30%),
+    linear-gradient(to bottom right, rgba(255, 255, 255, 0.08), transparent 35%);
+  mix-blend-mode: soft-light;
+}
+
+.dot-grid-overlay {
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.28) 1px, transparent 0);
+  background-size: 18px 18px;
+}
+
+.deferred-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 900px;
+}
+
+/* Tailwind animate plugin fallback classes used across pages */
+.animate-in {
+  animation-name: ui-enter;
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  --ui-enter-opacity: 0;
+}
+
+.slide-in-from-top-1 {
+  --ui-enter-y: -0.25rem;
+}
+
+.slide-in-from-top-2 {
+  --ui-enter-y: -0.5rem;
+}
+
+.slide-in-from-top-4 {
+  --ui-enter-y: -1rem;
+}
+
+.zoom-in-95 {
+  --ui-enter-scale: 0.95;
+}
+
+@keyframes ui-enter {
+  from {
+    opacity: var(--ui-enter-opacity, 1);
+    transform: translate3d(0, var(--ui-enter-y, 0), 0) scale(var(--ui-enter-scale, 1));
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
