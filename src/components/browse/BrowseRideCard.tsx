@@ -66,11 +66,11 @@ export const BrowseRideCard: React.FC<BrowseRideCardProps> = ({ ride, onSelect }
 
         {/* Route Visual */}
         <div className="mt-4 flex items-center gap-4 text-white relative">
-          <div className="flex-1">
+          <div className="flex-1 min-w-0 overflow-hidden">
             <p className={`text-xs uppercase tracking-wider mb-1 ${ride.type === 'driver' ? 'text-blue-100' : 'text-white/60'}`}>From</p>
-            <p className="font-bold truncate">{ride.origin}</p>
+            <p className="font-bold whitespace-nowrap overflow-hidden" style={{ maskImage: 'linear-gradient(to right, black 75%, transparent)', WebkitMaskImage: 'linear-gradient(to right, black 75%, transparent)' }}>{ride.origin}</p>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center shrink-0">
             <div className="w-16 h-0.5 bg-white/30 relative">
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white rounded-full"></div>
               <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white rounded-full"></div>
@@ -79,9 +79,9 @@ export const BrowseRideCard: React.FC<BrowseRideCardProps> = ({ ride, onSelect }
               <ArrowRight size={12} />
             </div>
           </div>
-          <div className="flex-1 text-right">
+          <div className="flex-1 min-w-0 overflow-hidden text-right">
             <p className={`text-xs uppercase tracking-wider mb-1 ${ride.type === 'driver' ? 'text-blue-100' : 'text-white/60'}`}>To</p>
-            <p className="font-bold truncate">{destinationShort}</p>
+            <p className="font-bold whitespace-nowrap overflow-hidden" style={{ maskImage: 'linear-gradient(to left, black 75%, transparent)', WebkitMaskImage: 'linear-gradient(to left, black 75%, transparent)' }}>{destinationShort}</p>
           </div>
         </div>
       </div>

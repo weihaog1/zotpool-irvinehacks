@@ -53,16 +53,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/login" replace />;
   }
 
-  // Waiver check: user must have signed the current version
+  // Onboarding check first (profile setup)
+  if (requireOnboarding && !user.isOnboarded && location.pathname !== '/onboarding') {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  // Waiver check last (user must have signed the current version)
   const hasValidWaiver =
     user.waiverSignedAt && user.waiverVersion === CURRENT_WAIVER_VERSION;
 
   if (requireWaiver && !hasValidWaiver && location.pathname !== '/waiver') {
     return <Navigate to="/waiver" replace />;
-  }
-
-  if (requireOnboarding && !user.isOnboarded && location.pathname !== '/onboarding') {
-    return <Navigate to="/onboarding" replace />;
   }
 
   return <>{children}</>;
@@ -77,18 +78,18 @@ const AppContent: React.FC = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<SignUp />} />
                     <Route
-                        path="/waiver"
+                        path="/onboarding"
                         element={
                             <ProtectedRoute requireWaiver={false} requireOnboarding={false}>
-                                <Waiver />
+                                <Onboarding />
                             </ProtectedRoute>
                         }
                     />
                     <Route
-                        path="/onboarding"
+                        path="/waiver"
                         element={
-                            <ProtectedRoute requireOnboarding={false}>
-                                <Onboarding />
+                            <ProtectedRoute requireWaiver={false}>
+                                <Waiver />
                             </ProtectedRoute>
                         }
                     />

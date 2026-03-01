@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '../types';
 import { supabase, dbUserToUser, DbUser } from '../services/supabase';
 import { TEST_USER_ID } from '../constants';
+import { CURRENT_WAIVER_VERSION } from '../data/waiverContent';
 
 interface AuthContextType {
   user: User | null;
@@ -20,7 +21,7 @@ interface AuthContextType {
     email: string,
     token: string,
   ) => Promise<{ success: boolean; error?: string }>;
-  loginForTesting: () => void;
+  loginForTesting: (skipAll?: boolean) => void;
   logout: () => Promise<void>;
   updateUser: (updates: Partial<User>) => Promise<void>;
 }
@@ -201,7 +202,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // Dev-only: Login for UI testing (bypasses Supabase auth)
-  const loginForTesting = () => {
+  // skipAll=true sets user as fully onboarded with waiver signed
+  const loginForTesting = (skipAll = false) => {
     const testUser: User = {
       id: TEST_USER_ID,
       email: 'test@uci.edu',
@@ -214,12 +216,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       major: 'Computer Science',
       year: 'Junior',
       role: 'both',
-      isOnboarded: false,
+      isOnboarded: skipAll,
       socials: {
         instagram: undefined,
         discord: undefined,
         phone: undefined,
       },
+      ...(skipAll && {
+        waiverSignedAt: new Date().toISOString(),
+        waiverVersion: CURRENT_WAIVER_VERSION,
+      }),
     };
     setUser(testUser);
     setIsLoading(false);

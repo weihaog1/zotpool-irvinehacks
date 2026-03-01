@@ -121,7 +121,7 @@ export const Onboarding: React.FC = () => {
         role: formData.role as 'driver' | 'passenger' | 'both',
         isOnboarded: true,
       });
-      navigate('/dashboard');
+      navigate('/waiver');
     } catch {
       // Profile save failed
     } finally {

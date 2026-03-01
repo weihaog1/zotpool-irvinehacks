@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Calendar, Clock, Car, User, ArrowRight, DollarSign, MessageCircle, Instagram, Mail, Phone, Sparkles, Shield, Repeat, CalendarDays, Tag } from 'lucide-react';
 import { Ride } from '../../types';
 import { TierBadge } from '../ui/TierBadge';
@@ -32,14 +33,19 @@ export const BrowseRideModal: React.FC<BrowseRideModalProps> = ({ ride, onClose 
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = '';
+    };
   }, [onClose]);
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+  return createPortal(
+    <div className="fixed inset-0 z-[60] flex items-center justify-center pt-24 pb-6 px-4">
+      {/* Backdrop: below navbar (z-50) so navbar stays visible */}
+      <div className="fixed inset-0 z-[45] bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 fade-in duration-200" role="dialog" aria-modal="true">
+      <div className="relative z-[60] bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-full overflow-y-auto animate-in zoom-in-95 fade-in duration-200" role="dialog" aria-modal="true">
         <button onClick={onClose} aria-label="Close details"
           className="absolute top-4 right-4 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-slate-100 transition-colors">
           <X size={20} />
@@ -236,6 +242,7 @@ export const BrowseRideModal: React.FC<BrowseRideModalProps> = ({ ride, onClose 
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

@@ -88,7 +88,7 @@ export const Browse: React.FC = () => {
               ))}
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 gap-6">
               {filteredRides.map(ride => (
                 <BrowseRideCard key={ride.id} ride={ride} onSelect={setSelectedRide} />
               ))}

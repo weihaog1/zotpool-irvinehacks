@@ -19,6 +19,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     navigate('/onboarding');
   };
 
+  const handleSkipToDashboard = () => {
+    loginForTesting(true);
+    navigate('/dashboard');
+  };
+
   type NavLinkProps = {
     to: string;
     icon: React.ComponentType<{ size?: number; className?: string }>;
@@ -47,6 +52,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   };
 
   const isLandingPage = location.pathname === '/';
+  const isFullScreenPage = ['/onboarding', '/waiver'].includes(location.pathname);
 
   return (
     <div className="min-h-screen flex flex-col relative bg-slate-50/50">
@@ -102,14 +108,20 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 {/* Public Navigation */}
                 {!user && (
                 <div className="hidden md:flex items-center space-x-2">
-                    {import.meta.env.DEV && (
+                    {import.meta.env.DEV && (<>
                     <button
                       onClick={handleTestOnboarding}
                       className="flex items-center gap-1.5 px-4 py-2 text-orange-600 font-medium hover:bg-orange-50 rounded-full transition-colors text-sm border border-orange-200 border-dashed"
                     >
                       <FlaskConical size={16} /> Test Onboard
                     </button>
-                    )}
+                    <button
+                      onClick={handleSkipToDashboard}
+                      className="flex items-center gap-1.5 px-4 py-2 text-green-600 font-medium hover:bg-green-50 rounded-full transition-colors text-sm border border-green-200 border-dashed"
+                    >
+                      <FlaskConical size={16} /> Skip to Dash
+                    </button>
+                    </>)}
                     <Link to="/login" className="px-5 py-2.5 text-uci-blue font-semibold hover:bg-blue-50 rounded-full transition-colors">Log In</Link>
                     <Link to="/signup" className="bg-uci-blue text-white px-6 py-2.5 rounded-full font-bold hover:bg-blue-700 transition-all hover:shadow-lg hover:shadow-blue-900/20 transform hover:-translate-y-0.5">
                     Sign Up
@@ -179,7 +191,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 </>
                 ) : (
                     <div className="flex flex-col gap-3 p-2">
-                        {import.meta.env.DEV && (
+                        {import.meta.env.DEV && (<>
                         <button
                           onClick={() => {
                             handleTestOnboarding();
@@ -189,7 +201,16 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                         >
                           <FlaskConical size={18} /> Test Onboard
                         </button>
-                        )}
+                        <button
+                          onClick={() => {
+                            handleSkipToDashboard();
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="w-full flex items-center justify-center gap-2 py-3 text-green-600 font-medium hover:bg-green-50 rounded-xl transition-colors border border-green-200 border-dashed"
+                        >
+                          <FlaskConical size={18} /> Skip to Dash
+                        </button>
+                        </>)}
                         <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-center py-3 text-uci-blue font-bold hover:bg-blue-50 rounded-xl transition-colors">Log In</Link>
                         <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-center py-3 bg-uci-blue text-white font-bold rounded-xl shadow-lg shadow-blue-500/25">Sign Up</Link>
                     </div>
@@ -199,7 +220,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         </nav>
       </div>
 
-      <main className={`flex-grow pb-12 relative z-0 ${isLandingPage ? '' : 'pt-28'}`}>
+      <main className={`flex-grow relative z-0 ${isLandingPage || isFullScreenPage ? '' : 'pt-28 pb-12'}`}>
         {children}
       </main>
 

@@ -30,11 +30,7 @@ export const Waiver: React.FC = () => {
         waiverVersion: CURRENT_WAIVER_VERSION,
       });
 
-      if (user.isOnboarded) {
-        navigate('/dashboard', { replace: true });
-      } else {
-        navigate('/onboarding', { replace: true });
-      }
+      navigate('/dashboard', { replace: true });
     } catch {
       setError('Failed to save your waiver signature. Please try again.');
     } finally {
