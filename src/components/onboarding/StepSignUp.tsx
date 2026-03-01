@@ -122,7 +122,7 @@ export const StepSignUp: React.FC = () => {
         <p className="text-slate-500 text-lg mt-2">Create an account to start carpooling.</p>
       </div>
 
-      {subStep === 'choose' && (
+      {subStep === 'choose' ? (
         <div className="space-y-5">
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -169,7 +169,7 @@ export const StepSignUp: React.FC = () => {
 
           {feedbackBlock}
         </div>
-      )}
+      ) : null}
 
       {subStep === 'general-form' && (
         <form onSubmit={handleSignUpSubmit} className="space-y-5">

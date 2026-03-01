@@ -25,8 +25,9 @@ const EMPTY_VEHICLE = {
 export const Onboarding: React.FC = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
-  const [step, setStep] = useState(user ? 2 : 1);
+  const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [wasAuthOnMount] = useState(!!user);
 
   const [formData, setFormData] = useState<OnboardingFormData>({
     name: user?.name || '',
@@ -42,15 +43,15 @@ export const Onboarding: React.FC = () => {
     vehicle: { ...EMPTY_VEHICLE },
   });
 
-  // Auto-advance past sign-up step once user is authenticated
+  // Auto-advance past sign-up step when user authenticates during session
   useEffect(() => {
-    if (user && step === 1) {
+    if (user && step === 1 && !wasAuthOnMount) {
       setStep(2);
       if (user.name) {
         setFormData(prev => ({ ...prev, name: user.name }));
       }
     }
-  }, [user, step]);
+  }, [user, step, wasAuthOnMount]);
 
   // Redirect already-onboarded users to dashboard
   useEffect(() => {
@@ -90,7 +91,7 @@ export const Onboarding: React.FC = () => {
   };
 
   const handleBack = () => {
-    if (step > 2) setStep(step - 1);
+    if (step > 1) setStep(step - 1);
   };
 
   const saveVehicle = async () => {
@@ -142,7 +143,7 @@ export const Onboarding: React.FC = () => {
 
   const isLastStep = step === totalSteps;
   const showSkip = step === 4 || (step === 7 && needsVehicleStep);
-  const isSignUpStep = step === 1;
+  const hideNav = step === 1 && !user;
 
   const stepProps = { formData, setFormData, email: user?.email };
 
@@ -152,9 +153,9 @@ export const Onboarding: React.FC = () => {
 
       <div className="max-w-xl w-full bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-2xl p-8 md:p-12 border border-white/50 relative z-10 transition-all duration-500">
         {/* Step indicator */}
-        {!isSignUpStep && (
+        {!hideNav && (
           <div className="flex items-center justify-center space-x-2 mb-10">
-            {Array.from({ length: totalSteps - 1 }, (_, i) => i + 2).map((i) => (
+            {Array.from({ length: totalSteps }, (_, i) => i + 1).map((i) => (
               <div
                 key={i}
                 className={`h-2 rounded-full transition-all duration-500 ${
@@ -176,14 +177,14 @@ export const Onboarding: React.FC = () => {
           {step === 7 && needsVehicleStep && <StepVehicle {...stepProps} />}
         </div>
 
-        {/* Navigation (hidden on sign-up step) */}
-        {!isSignUpStep && (
+        {/* Navigation (hidden on sign-up step for unauthenticated users) */}
+        {!hideNav && (
           <div className="flex justify-between items-center mt-12 pt-6 border-t border-slate-100">
             <button
               onClick={handleBack}
-              disabled={step === 2}
+              disabled={step === 1}
               className={`px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-colors ${
-                step === 2 ? 'invisible' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+                step === 1 ? 'invisible' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
               }`}
             >
               <ChevronLeft size={20} /> Back
