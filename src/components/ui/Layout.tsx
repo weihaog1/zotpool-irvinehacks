@@ -59,12 +59,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       {/* Floating Navbar */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4 pointer-events-none">
         <nav className={`${isLandingPage ? 'glass-solid' : 'glass'} rounded-full shadow-xl shadow-slate-200/50 pointer-events-auto w-full max-w-5xl mx-auto transition-all duration-300`}>
-            <div className="px-6">
-            <div className="flex justify-between items-center h-16">
+            <div className="px-4 md:px-6">
+            <div className="flex justify-between items-center h-12 md:h-16">
                 <div className="flex items-center">
-                <Link to="/" className="flex items-center gap-2 group">
-                    <img src="/assets/icon.png" alt="ZotPool" className="h-[60px] w-[60px] group-hover:scale-110 transition-transform duration-300" />
-                    <span className="font-display font-bold text-2xl tracking-tight text-uci-dark">Zot<span className="text-uci-blue">Pool</span></span>
+                <Link to="/" className="flex items-center gap-1.5 md:gap-2 group">
+                    <img src="/assets/icon.png" alt="ZotPool" className="h-[40px] w-[40px] md:h-[60px] md:w-[60px] group-hover:scale-110 transition-transform duration-300" />
+                    <span className="font-display font-bold text-xl md:text-2xl tracking-tight text-uci-dark">Zot<span className="text-uci-blue">Pool</span></span>
                 </Link>
                 </div>
 

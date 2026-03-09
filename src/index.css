@@ -42,6 +42,12 @@ canvas {
   background-size: 18px 18px;
 }
 
+@media (max-width: 767px) {
+  .anteater-car {
+    transform: scale(2.5);
+  }
+}
+
 .deferred-section {
   content-visibility: auto;
   contain-intrinsic-size: 1px 900px;
